@@ -8,7 +8,7 @@ public class MapperProfile : Profile
 {
     public MapperProfile()
     {
-        CreateMap<Employee, EmployeeDTO>();
-        CreateMap<Department, DepartmentDTO>();
+        CreateMap<Employee, EmployeeDTO>().ReverseMap();
+        CreateMap<Department, DepartmentDTO>().ReverseMap();
     }
 }

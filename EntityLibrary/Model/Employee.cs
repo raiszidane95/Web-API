@@ -3,12 +3,11 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace EntityLibrary.Model;
 
-public class Employee 
+public class Employee : ModelBase
 {
-    public int EmployeeId { get; set; }
-    public string FullName { get; set; }
-    public string Email { get; set; }
+    
     public int DepartmentID { get; set; }
-    [ForeignKey("DepartmentID")] 
-    public Department Department { get; set; }
+    [Column(TypeName = "varchar(25)")] public string FullName { get; set; }
+    [Column(TypeName = "varchar(25)")] public string Email { get; set; }
+    [ForeignKey("DepartmentID")] public Department Department { get; set; }
 }

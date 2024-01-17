@@ -2,9 +2,8 @@
 
 using EntityLibrary.Model;
 
-public class Department 
+public class Department : ModelBase
 {
-    public int DepartmentId { get; set; }
     public string DepartmentName { get; set; }
     public string DepartmentDescription { get; set; }
     

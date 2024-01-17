@@ -16,7 +16,7 @@ public class RepositoryContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Department>(e =>
         {
-            e.HasKey(c => c.DepartmentId);
+            e.HasKey(c => c.Id);
             e.Property(c => c.DepartmentName).IsRequired(true);
             e.Property(c => c.DepartmentDescription).IsRequired(false);
             e.HasMany(e => e.Employee);
@@ -24,7 +24,7 @@ public class RepositoryContext : DbContext
         
         modelBuilder.Entity<Employee>(e =>
         {
-            e.HasKey(c => c.EmployeeId);
+            e.HasKey(c => c.Id);
             e.Property(c => c.FullName).IsRequired(true);
             e.Property(c => c.Email).IsRequired(false);
         });
@@ -33,12 +33,12 @@ public class RepositoryContext : DbContext
         (
             new Department() 
             {
-                DepartmentId= 1,
+                Id= 1,
                 DepartmentName = "Software Engineer",
                 DepartmentDescription = "Software Engineering"
             },new Department() 
             {
-                DepartmentId= 2,
+                Id= 2,
                 DepartmentName = "Electrical Engineer",
                 DepartmentDescription = "Electrical Engineering"
             }
@@ -48,13 +48,13 @@ public class RepositoryContext : DbContext
         (
             new Employee() 
             {
-                EmployeeId = 1,
+                Id = 1,
                 FullName= "Dody Kurniawan",
                 Email = "dody@company.com",
                 DepartmentID = 1
             }, new Employee() 
             {
-                EmployeeId = 2,
+                Id = 2,
                 FullName= "Rei Santoso",
                 Email = "rei@company.com",
                 DepartmentID = 2
