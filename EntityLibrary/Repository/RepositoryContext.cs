@@ -16,7 +16,7 @@ public class RepositoryContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Department>(e =>
         {
-            e.HasKey(c => c.DepartmetId);
+            e.HasKey(c => c.DepartmentId);
             e.Property(c => c.DepartmentName).IsRequired(true);
             e.Property(c => c.DepartmentDescription).IsRequired(false);
             e.HasMany(e => e.Employee);
@@ -29,38 +29,38 @@ public class RepositoryContext : DbContext
             e.Property(c => c.Email).IsRequired(false);
         });
         
-        // modelBuilder.Entity<Category>().HasData
-        // (
-        //     new Category() 
-        //     {
-        //         CategoryId = 1,
-        //         CategoryName = "Electronic",
-        //         Description = "Ini electronic"
-        //     },
-        //     new Category() 
-        //     {
-        //         CategoryId = 2,
-        //         CategoryName = "Fruit",
-        //         Description = "Ini Fruit"
-        //     }
-        // );
-        // modelBuilder.Entity<Product>().HasData
-        // (
-        //     new Product() 
-        //     {
-        //         ProductId = 1,
-        //         ProductName = "TV",
-        //         Description = "Ini TV",
-        //         CategoryId = 1
-        //     },
-        //     new Product() 
-        //     {
-        //         ProductId = 2,
-        //         ProductName = "HP",
-        //         Description = "Ini HP",
-        //         CategoryId = 1
-        //     }
-        // );
+        modelBuilder.Entity<Department>().HasData
+        (
+            new Department() 
+            {
+                DepartmentId= 1,
+                DepartmentName = "Software Engineer",
+                DepartmentDescription = "Software Engineering"
+            },new Department() 
+            {
+                DepartmentId= 2,
+                DepartmentName = "Electrical Engineer",
+                DepartmentDescription = "Electrical Engineering"
+            }
+           
+        );
+        modelBuilder.Entity<Employee>().HasData
+        (
+            new Employee() 
+            {
+                EmployeeId = 1,
+                FullName= "Dody Kurniawan",
+                Email = "dody@company.com",
+                DepartmentID = 1
+            }, new Employee() 
+            {
+                EmployeeId = 2,
+                FullName= "Rei Santoso",
+                Email = "rei@company.com",
+                DepartmentID = 2
+            }
+            
+        );
     }
 
 }
