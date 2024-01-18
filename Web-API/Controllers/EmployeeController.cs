@@ -112,6 +112,7 @@ public class EmployeeController : APIBaseController
             return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
         }
     }
+    
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(EmployeeDTO), StatusCodes.Status204NoContent)]
     public async Task<IActionResult> DeleteEmployee(int id)
@@ -121,6 +122,7 @@ public class EmployeeController : APIBaseController
         if (employee == null) return NotFound();
         
         _db.Remove(employee);
+        await _db.SaveChangesAsync();
         EmployeeDTO response = _map.Map<EmployeeDTO>(employee); 
         return Ok(response);
     }
