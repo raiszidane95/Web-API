@@ -11,6 +11,11 @@ public class RepositoryContext : DbContext
     public DbSet<Employee> Employee { get; set; }
     public DbSet<Department> Department { get; set; }
     
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseLazyLoadingProxies();
+    }
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

@@ -1,7 +1,6 @@
 using AutoMapper;
 using EntityLibrary.Model;
 using EntityLibrary.Repository;
-using Microsoft.AspNetCore.DataProtection.Internal;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web_API.DTOs;
@@ -17,17 +16,98 @@ public class EmployeeController : APIBaseController
         _map = map;
         _db = myDatabase;
     }
+    
     [HttpGet]
-    public async Task<IActionResult> GetEmployee()
+    [ProducesResponseType(typeof(EmployeeDTO), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAllEmployee()
     {
-        IQueryable<Employee> categories;
+        IQueryable<Employee> employees;
       
-        categories = _db.Employee;
-        if(!categories.Any()) 
+        employees = _db.Employee.Include(e => e.Department);
+        if(!employees.Any()) 
         {
             return NotFound();
         }
-        List<EmployeeDTO> response = _map.Map<List<EmployeeDTO>>(categories); 
+        List<EmployeeDTO> response = _map.Map<List<EmployeeDTO>>(employees); 
+        return Ok(response);
+    }
+    
+    [HttpGet("id")]
+    [ProducesResponseType(typeof(EmployeeDTO), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetEmployeeById(int id)
+    {
+        Employee? employee;
+        employee = await _db.Employee.FindAsync(id);
+        EmployeeDTO response = _map.Map<EmployeeDTO>(employee); 
+        return response == null ? NotFound() : Ok(response);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(EmployeeDTO), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AddEmployee([FromQuery] EmployeeDTO employeeDto)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        
+        if (employeeDto.DepartmentID != employeeDto.Department?.Id)
+        {
+            ModelState.AddModelError(nameof(employeeDto.DepartmentID), "DepartmentID must match Department.Id");
+            return BadRequest(ModelState);
+        }
+        try
+        {
+            var employee = _map.Map<Employee>(employeeDto);
+            await _db.Employee.AddAsync(employee);
+            await _db.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetEmployeeById), new { employeeDto });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+    
+    [HttpPut("{id}")]
+    [ProducesResponseType(typeof(EmployeeDTO), StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> UpdateEmployeeById(int id, [FromQuery] EmployeeDTO employeeDto)
+    {
+        if (id != employeeDto.Id)
+        {
+            return BadRequest("ID in the URL does not match ID in the request body.");
+        }
+
+        try
+        {
+            Employee employee = await _db.Employee.FindAsync(id);
+            
+            if (employee == null)
+            {
+                return NotFound("Employee not found.");
+            }
+
+            _map.Map(employeeDto, employee);
+            await _db.SaveChangesAsync();
+            EmployeeDTO response = _map.Map<EmployeeDTO>(employee);
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        }
+    }
+    [HttpDelete("{id}")]
+    [ProducesResponseType(typeof(EmployeeDTO), StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> DeleteEmployee(int id)
+    {
+        Employee? employee;
+        employee = await _db.Employee.FindAsync(id);
+        if (employee == null) return NotFound();
+        
+        _db.Remove(employee);
+        EmployeeDTO response = _map.Map<EmployeeDTO>(employee); 
         return Ok(response);
     }
 }

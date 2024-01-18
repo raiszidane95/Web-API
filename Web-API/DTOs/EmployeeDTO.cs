@@ -6,5 +6,5 @@ public class EmployeeDTO
     public int DepartmentID { get; set; }
     public string FullName { get; set; }
     public string Email { get; set; }
-    public DepartmentDTO Department { get; set; }
+    public DepartmentDTO? Department { get; set; }
 }
