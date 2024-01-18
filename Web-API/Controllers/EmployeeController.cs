@@ -51,7 +51,17 @@ public class EmployeeController : APIBaseController
         {
             return BadRequest(ModelState);
         }
-        
+
+        if (employeeDto.DepartmentID == null)
+        {
+            ModelState.AddModelError(nameof(employeeDto.DepartmentID), "DepartmentID is Required");
+            return BadRequest(ModelState);
+        }
+
+        if (employeeDto.Department?.Id == null)
+        {
+            employeeDto.Department!.Id = employeeDto.DepartmentID;
+        }
         if (employeeDto.DepartmentID != employeeDto.Department?.Id)
         {
             ModelState.AddModelError(nameof(employeeDto.DepartmentID), "DepartmentID must match Department.Id");
